@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Profit Calculator - KWD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .profile-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .profile-section select {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .profile-section select option {
+            padding: 8px;
+        }
+
+        .profile-section select option.main-profile {
+            font-weight: bold;
+            background: #f0f0f0;
+        }
+
+        .profile-section select option.sub-profile {
+            padding-left: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #2980b9;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+        }
+
+        .btn-save {
+            background: #f39c12;
+            color: white;
+            font-size: 16px;
+            padding: 14px 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-save:hover {
+            background: #e67e22;
+        }
+
+        .btn-save.saved {
+            background: #2ecc71;
+        }
+
+        .save-section {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .save-status {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .save-status.show {
+            display: block;
+        }
+
+        .save-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .save-status.unsaved {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .inherit-toggle-section {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid #4caf50;
+            display: none;
+        }
+
+        .inherit-toggle-section.active {
+            display: block;
+        }
+
+        .inherit-toggle-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .inherit-toggle-info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .inherit-toggle-info h3 {
+            color: #2e7d32;
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .inherit-toggle-info p {
+            color: #558b2f;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .inherit-toggle-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #4caf50;
+        }
+
+        .toggle-switch-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-switch-slider {
+            transform: translateX(30px);
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: #2e7d32;
+            font-size: 16px;
+        }
+
+        .main-revenue-badge {
+            background: #4caf50;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .section.linked {
+            border: 3px solid #3498db;
+            background: #ebf5fb;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .link-indicator {
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .item input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .item input[type="text"] {
+            flex: 2;
+        }
+
+        .item input[type="number"] {
+            flex: 1;
+        }
+
+        .item-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .icon-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .add-btn {
+            background: #2ecc71;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .add-btn:hover {
+            background: #27ae60;
+        }
+
+        .installment-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .installment-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .installment-details {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .installment-details.active {
+            display: block;
+        }
+
+        .installment-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            align-items: center;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .summary-row.inherited {
+            background: rgba(76, 175, 80, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+        }
+
+        .currency {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .linking-modal-section {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .linking-modal-section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .linking-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            margin: 5px 0;
+        }
+
+        .linking-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .profile-type-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .profile-type-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .profile-type-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .sub-profile-selector {
+            display: none;
+            margin: 10px 0;
+        }
+
+        .sub-profile-selector.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .item {
+                flex-wrap: wrap;
+            }
+
+            .item input {
+                min-width: 100%;
+            }
+
+            .profile-section {
+                flex-direction: column;
+            }
+
+            .profile-section select,
+            .profile-section button {
+                width: 100%;
+            }
+
+            .save-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .inherit-toggle-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Business Profit Calculator</h1>
+            <p>Track your business finances in KWD</p>
+        </div>
+
+        <div class="profile-section">
+            <select id="profileSelector">
+                <option value="default">Main Profile - Default</option>
+            </select>
+            <button class="btn btn-primary" onclick="openNewProfileModal()">+ New Main Profile</button>
+            <button class="btn btn-secondary" onclick="openNewSubProfileModal()">+ New Sub Profile</button>
+            <button class="btn btn-danger" onclick="deleteProfile()">Delete Profile</button>
+        </div>
+
+        <div class="save-section">
+            <div id="saveStatus" class="save-status"></div>
+            <button class="btn btn-save" onclick="manualSave()">
+                <span id="saveIcon">💾</span>
+                <span id="saveText">Save</span>
+            </button>
+            <button class="btn btn-primary" onclick="openLinkingModal()">🔗 Manage Section Linking</button>
+        </div>
+
+        <!-- Inherit Main Profile Revenue Toggle -->
+        <div id="inheritToggleSection" class="inherit-toggle-section">
+            <div class="inherit-toggle-content">
+                <div class="inherit-toggle-info">
+                    <h3>
+                        <span>📊 Main Profile Revenue</span>
+                        <span class="main-revenue-badge" id="mainRevenueBadge">0.000 KWD</span>
+                    </h3>
+                    <p>Include revenue from parent main profile in calculations</p>
+                    <p id="mainProfileName" style="font-weight: 600;"></p>
+                </div>
+                <div class="inherit-toggle-controls">
+                    <span class="toggle-label" id="toggleStatusLabel">OFF</span>
+                    <div class="toggle-switch" id="inheritToggle" onclick="toggleInheritRevenue()">
+                        <div class="toggle-switch-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="revenueSection">
+            <div class="section-title">
+                <span>💵 Revenue Sources</span>
+                <div class="section-controls">
+                    <span class="link-indicator" id="revenueLinkIndicator" style="display: none;">Linked</span>
+                </div>
+            </div>
+            <div id="revenueItems"></div>
+            <button class="add-btn" onclick="addItem('revenue')">+ Add Revenue</button>
+        </div>
+
+        <div class="section" id="expenseSection">
+            <div class="section-title">
+                <span>💸 Expenses</span>
+                <div class="section-controls">
+                    <span class="link-indicator" id="expenseLinkIndicator" style="display: none;">Linked</span>
+                </div>
+            </div>
+            <div id="expenseItems"></div>
+            <button class="add-btn" onclick="addItem('expense')">+ Add Expense</button>
+        </div>
+
+        <div class="summary">
+            <div class="summary-row" id="inheritedRevenueRow" style="display: none;">
+                <span>Main Profile Revenue:</span>
+                <span class="currency" id="inheritedRevenue">0.000 KWD</span>
+            </div>
+            <div class="summary-row">
+                <span>Total Revenue:</span>
+                <span class="currency" id="totalRevenue">0.000 KWD</span>
+            </div>
+            <div class="summary-row">
+                <span>Total Expenses:</span>
+                <span class="currency" id="totalExpenses">0.000 KWD</span>
+            </div>
+            <div class="summary-row">
+                <span>Pending Installments:</span>
+                <span class="currency" id="pendingInstallments">0.000 KWD</span>
+            </div>
+            <div class="summary-row">
+                <span>Net Profit:</span>
+                <span class="currency" id="netProfit">0.000 KWD</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <h2 id="profileModalTitle">Create New Profile</h2>
+
+            <div class="profile-type-selector" id="profileTypeSelector" style="display: none;">
+                <button class="profile-type-btn active" onclick="selectProfileType('main')">Main Profile</button>
+                <button class="profile-type-btn" onclick="selectProfileType('sub')">Sub Profile</button>
+            </div>
+
+            <div class="sub-profile-selector" id="subProfileParentSelector">
+                <label>Select Main Profile:</label>
+                <select id="parentProfileSelect"></select>
+            </div>
+
+            <input type="text" id="newProfileName" placeholder="Enter profile name">
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveNewProfile()">Create</button>
+                <button class="btn btn-danger" onclick="closeModal('profileModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Linking Modal -->
+    <div id="linkingModal" class="modal">
+        <div class="modal-content">
+            <h2>🔗 Manage Section Linking</h2>
+            <p style="margin-bottom: 20px; color: #666;">Link sections together to group related calculations</p>
+
+            <div class="linking-modal-section">
+                <h3>Revenue Sources</h3>
+                <div id="revenueLinkOptions"></div>
+            </div>
+
+            <div class="linking-modal-section">
+                <h3>Expenses</h3>
+                <div id="expenseLinkOptions"></div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="saveLinking()">Save Linking</button>
+                <button class="btn btn-danger" onclick="closeModal('linkingModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let profiles = {};
+        let currentProfile = 'default';
+        let profileType = 'main';
+        let hasUnsavedChanges = false;
+
+        // Initialize
+        function init() {
+            loadProfiles();
+            loadCurrentProfile();
+            calculate();
+            showSaveStatus('All changes saved', 'success');
+        }
+
+        // Save Status Management
+        function showSaveStatus(message, type) {
+            const status = document.getElementById('saveStatus');
+            status.textContent = message;
+            status.className = 'save-status show ' + type;
+
+            setTimeout(() => {
+                status.classList.remove('show');
+            }, 3000);
+        }
+
+        function markUnsaved() {
+            hasUnsavedChanges = true;
+            const saveBtn = document.querySelector('.btn-save');
+            saveBtn.classList.remove('saved');
+            document.getElementById('saveIcon').textContent = '💾';
+            document.getElementById('saveText').textContent = 'Save';
+        }
+
+        function markSaved() {
+            hasUnsavedChanges = false;
+            const saveBtn = document.querySelector('.btn-save');
+            saveBtn.classList.add('saved');
+            document.getElementById('saveIcon').textContent = '✓';
+            document.getElementById('saveText').textContent = 'Saved';
+
+            setTimeout(() => {
+                saveBtn.classList.remove('saved');
+                document.getElementById('saveIcon').textContent = '💾';
+                document.getElementById('saveText').textContent = 'Save';
+            }, 2000);
+        }
+
+        function manualSave() {
+            saveCurrentProfile();
+            markSaved();
+            showSaveStatus('✓ All changes saved successfully!', 'success');
+        }
+
+        // Profile Management
+        function loadProfiles() {
+            const saved = localStorage.getItem('businessProfiles');
+            if (saved) {
+                profiles = JSON.parse(saved);
+            } else {
+                profiles = {
+                    'default': {
+                        name: 'Default',
+                        type: 'main',
+                        parent: null,
+                        revenue: [],
+                        expenses: [],
+                        sectionLinks: [],
+                        inheritMainRevenue: false
+                    }
+                };
+            }
+            updateProfileSelector();
+        }
+
+        function updateProfileSelector() {
+            const selector = document.getElementById('profileSelector');
+            selector.innerHTML = '';
+
+            const mainProfiles = {};
+
+            for (let key in profiles) {
+                const profile = profiles[key];
+                if (profile.type === 'main') {
+                    mainProfiles[key] = {
+                        profile: profile,
+                        key: key,
+                        subs: []
+                    };
+                }
+            }
+
+            for (let key in profiles) {
+                const profile = profiles[key];
+                if (profile.type === 'sub' && profile.parent && mainProfiles[profile.parent]) {
+                    mainProfiles[profile.parent].subs.push({ key: key, profile: profile });
+                }
+            }
+
+            for (let mainKey in mainProfiles) {
+                const main = mainProfiles[mainKey];
+                const option = document.createElement('option');
+                option.value = main.key;
+                option.textContent = '📁 ' + main.profile.name + ' (Main)';
+                option.className = 'main-profile';
+                selector.appendChild(option);
+
+                main.subs.forEach(sub => {
+                    const subOption = document.createElement('option');
+                    subOption.value = sub.key;
+                    subOption.textContent = '   └─ ' + sub.profile.name;
+                    subOption.className = 'sub-profile';
+                    selector.appendChild(subOption);
+                });
+            }
+
+            selector.value = currentProfile;
+            selector.onchange = switchProfile;
+        }
+
+        function switchProfile() {
+            if (hasUnsavedChanges) {
+                if (!confirm('You have unsaved changes. Do you want to switch profiles without saving?')) {
+                    document.getElementById('profileSelector').value = currentProfile;
+                    return;
+                }
+            }
+            const selector = document.getElementById('profileSelector');
+            currentProfile = selector.value;
+            loadCurrentProfile();
+            hasUnsavedChanges = false;
+        }
+
+        function loadCurrentProfile() {
+            const profile = profiles[currentProfile];
+            if (!profile) return;
+
+            document.getElementById('revenueItems').innerHTML = '';
+            document.getElementById('expenseItems').innerHTML = '';
+
+            profile.revenue?.forEach(item => {
+                addItem('revenue', item, true);
+            });
+
+            profile.expenses?.forEach(item => {
+                addItem('expense', item, true);
+            });
+
+            // Show/hide inherit toggle based on profile type
+            const inheritToggleSection = document.getElementById('inheritToggleSection');
+            const inheritToggle = document.getElementById('inheritToggle');
+            const toggleStatusLabel = document.getElementById('toggleStatusLabel');
+
+            if (profile.type === 'sub' && profile.parent) {
+                inheritToggleSection.classList.add('active');
+
+                // Set toggle state
+                if (profile.inheritMainRevenue) {
+                    inheritToggle.classList.add('active');
+                    toggleStatusLabel.textContent = 'ON';
+                } else {
+                    inheritToggle.classList.remove('active');
+                    toggleStatusLabel.textContent = 'OFF';
+                }
+
+                // Show parent profile name
+                const parentProfile = profiles[profile.parent];
+                document.getElementById('mainProfileName').textContent = 
+                    'Parent: ' + (parentProfile ? parentProfile.name : 'Unknown');
+            } else {
+                inheritToggleSection.classList.remove('active');
+            }
+
+            updateSectionLinkingVisuals();
+            calculate();
+        }
+
+        function toggleInheritRevenue() {
+            const profile = profiles[currentProfile];
+            if (profile.type !== 'sub') return;
+
+            profile.inheritMainRevenue = !profile.inheritMainRevenue;
+
+            const inheritToggle = document.getElementById('inheritToggle');
+            const toggleStatusLabel = document.getElementById('toggleStatusLabel');
+
+            if (profile.inheritMainRevenue) {
+                inheritToggle.classList.add('active');
+                toggleStatusLabel.textContent = 'ON';
+            } else {
+                inheritToggle.classList.remove('active');
+                toggleStatusLabel.textContent = 'OFF';
+            }
+
+            markUnsaved();
+            calculate();
+        }
+
+        function calculateMainProfileRevenue(mainProfileKey) {
+            const mainProfile = profiles[mainProfileKey];
+            if (!mainProfile) return 0;
+
+            let totalRevenue = 0;
+            mainProfile.revenue?.forEach(item => {
+                totalRevenue += parseFloat(item.amount) || 0;
+            });
+
+            return totalRevenue;
+        }
+
+        function openNewProfileModal() {
+            profileType = 'main';
+            document.getElementById('profileModalTitle').textContent = 'Create New Main Profile';
+            document.getElementById('profileTypeSelector').style.display = 'none';
+            document.getElementById('subProfileParentSelector').classList.remove('active');
+            document.getElementById('newProfileName').value = '';
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function openNewSubProfileModal() {
+            profileType = 'sub';
+            document.getElementById('profileModalTitle').textContent = 'Create New Sub Profile';
+            document.getElementById('profileTypeSelector').style.display = 'none';
+
+            const parentSelect = document.getElementById('parentProfileSelect');
+            parentSelect.innerHTML = '';
+
+            for (let key in profiles) {
+                if (profiles[key].type === 'main') {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = profiles[key].name;
+                    parentSelect.appendChild(option);
+                }
+            }
+
+            document.getElementById('subProfileParentSelector').classList.add('active');
+            document.getElementById('newProfileName').value = '';
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function selectProfileType(type) {
+            profileType = type;
+            const buttons = document.querySelectorAll('.profile-type-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (type === 'sub') {
+                document.getElementById('subProfileParentSelector').classList.add('active');
+                const parentSelect = document.getElementById('parentProfileSelect');
+                parentSelect.innerHTML = '';
+
+                for (let key in profiles) {
+                    if (profiles[key].type === 'main') {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = profiles[key].name;
+                        parentSelect.appendChild(option);
+                    }
+                }
+            } else {
+                document.getElementById('subProfileParentSelector').classList.remove('active');
+            }
+        }
+
+        function saveNewProfile() {
+            const name = document.getElementById('newProfileName').value.trim();
+            if (!name) {
+                alert('Please enter a profile name');
+                return;
+            }
+
+            const key = 'profile_' + Date.now();
+            profiles[key] = {
+                name: name,
+                type: profileType,
+                parent: profileType === 'sub' ? document.getElementById('parentProfileSelect').value : null,
+                revenue: [],
+                expenses: [],
+                sectionLinks: [],
+                inheritMainRevenue: false
+            };
+
+            currentProfile = key;
+            saveProfiles();
+            updateProfileSelector();
+            loadCurrentProfile();
+            closeModal('profileModal');
+            showSaveStatus('✓ New profile created and saved', 'success');
+        }
+
+        function deleteProfile() {
+            if (currentProfile === 'default') {
+                alert('Cannot delete default profile');
+                return;
+            }
+
+            const profile = profiles[currentProfile];
+
+            const hasSubProfiles = Object.values(profiles).some(p => 
+                p.type === 'sub' && p.parent === currentProfile
+            );
+
+            if (hasSubProfiles) {
+                if (!confirm('This main profile has sub-profiles. Deleting it will also delete all sub-profiles. Continue?')) {
+                    return;
+                }
+
+                for (let key in profiles) {
+                    if (profiles[key].parent === currentProfile) {
+                        delete profiles[key];
+                    }
+                }
+            }
+
+            if (confirm('Are you sure you want to delete this profile?')) {
+                delete profiles[currentProfile];
+                currentProfile = 'default';
+                saveProfiles();
+                updateProfileSelector();
+                loadCurrentProfile();
+                showSaveStatus('✓ Profile deleted', 'success');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function saveProfiles() {
+            localStorage.setItem('businessProfiles', JSON.stringify(profiles));
+        }
+
+        function saveCurrentProfile() {
+            const profile = profiles[currentProfile];
+            profile.revenue = [];
+            profile.expenses = [];
+
+            document.querySelectorAll('#revenueItems .item').forEach(item => {
+                profile.revenue.push(getItemData(item));
+            });
+
+            document.querySelectorAll('#expenseItems .item').forEach(item => {
+                profile.expenses.push(getItemData(item));
+            });
+
+            saveProfiles();
+        }
+
+        function getItemData(itemElement) {
+            const data = {
+                name: itemElement.querySelector('.item-name').value,
+                amount: parseFloat(itemElement.querySelector('.item-amount').value) || 0,
+                id: itemElement.dataset.id,
+                hasInstallment: false
+            };
+
+            const installmentSection = itemElement.querySelector('.installment-section');
+            if (installmentSection) {
+                const checkbox = installmentSection.querySelector('.installment-checkbox');
+                data.hasInstallment = checkbox?.checked || false;
+
+                if (data.hasInstallment) {
+                    data.installments = [];
+                    installmentSection.querySelectorAll('.installment-item').forEach(inst => {
+                        data.installments.push({
+                            amount: parseFloat(inst.querySelector('.inst-amount').value) || 0,
+                            date: inst.querySelector('.inst-date').value,
+                            paid: inst.querySelector('.inst-paid').checked
+                        });
+                    });
+                }
+            }
+
+            return data;
+        }
+
+        // Section Linking
+        function openLinkingModal() {
+            const modal = document.getElementById('linkingModal');
+            const profile = profiles[currentProfile];
+
+            const revenueLinkOptions = document.getElementById('revenueLinkOptions');
+            revenueLinkOptions.innerHTML = '';
+
+            const revenueItems = document.querySelectorAll('#revenueItems .item');
+            revenueItems.forEach(item => {
+                const itemId = item.dataset.id;
+                const itemName = item.querySelector('.item-name').value || 'Unnamed';
+                const isLinked = profile.sectionLinks?.some(link => 
+                    link.type === 'revenue' && link.items.includes(itemId)
+                );
+
+                const option = document.createElement('div');
+                option.className = 'linking-option';
+                option.innerHTML = `
+                    <input type="checkbox" id="link_rev_${itemId}" ${isLinked ? 'checked' : ''} data-id="${itemId}" data-type="revenue">
+                    <label for="link_rev_${itemId}">${itemName}</label>
+                `;
+                revenueLinkOptions.appendChild(option);
+            });
+
+            const expenseLinkOptions = document.getElementById('expenseLinkOptions');
+            expenseLinkOptions.innerHTML = '';
+
+            const expenseItems = document.querySelectorAll('#expenseItems .item');
+            expenseItems.forEach(item => {
+                const itemId = item.dataset.id;
+                const itemName = item.querySelector('.item-name').value || 'Unnamed';
+                const isLinked = profile.sectionLinks?.some(link => 
+                    link.type === 'expense' && link.items.includes(itemId)
+                );
+
+                const option = document.createElement('div');
+                option.className = 'linking-option';
+                option.innerHTML = `
+                    <input type="checkbox" id="link_exp_${itemId}" ${isLinked ? 'checked' : ''} data-id="${itemId}" data-type="expense">
+                    <label for="link_exp_${itemId}">${itemName}</label>
+                `;
+                expenseLinkOptions.appendChild(option);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function saveLinking() {
+            const profile = profiles[currentProfile];
+            profile.sectionLinks = [];
+
+            const revenueChecked = [];
+            document.querySelectorAll('#revenueLinkOptions input[type="checkbox"]:checked').forEach(cb => {
+                revenueChecked.push(cb.dataset.id);
+            });
+
+            if (revenueChecked.length > 0) {
+                profile.sectionLinks.push({
+                    type: 'revenue',
+                    items: revenueChecked
+                });
+            }
+
+            const expenseChecked = [];
+            document.querySelectorAll('#expenseLinkOptions input[type="checkbox"]:checked').forEach(cb => {
+                expenseChecked.push(cb.dataset.id);
+            });
+
+            if (expenseChecked.length > 0) {
+                profile.sectionLinks.push({
+                    type: 'expense',
+                    items: expenseChecked
+                });
+            }
+
+            saveProfiles();
+            updateSectionLinkingVisuals();
+            closeModal('linkingModal');
+            showSaveStatus('✓ Section linking saved', 'success');
+            markSaved();
+        }
+
+        function updateSectionLinkingVisuals() {
+            const profile = profiles[currentProfile];
+            const revenueSection = document.getElementById('revenueSection');
+            const expenseSection = document.getElementById('expenseSection');
+            const revenueLinkIndicator = document.getElementById('revenueLinkIndicator');
+            const expenseLinkIndicator = document.getElementById('expenseLinkIndicator');
+
+            const revenueLinked = profile.sectionLinks?.some(link => 
+                link.type === 'revenue' && link.items.length > 0
+            );
+
+            if (revenueLinked) {
+                revenueSection.classList.add('linked');
+                revenueLinkIndicator.style.display = 'block';
+            } else {
+                revenueSection.classList.remove('linked');
+                revenueLinkIndicator.style.display = 'none';
+            }
+
+            const expenseLinked = profile.sectionLinks?.some(link => 
+                link.type === 'expense' && link.items.length > 0
+            );
+
+            if (expenseLinked) {
+                expenseSection.classList.add('linked');
+                expenseLinkIndicator.style.display = 'block';
+            } else {
+                expenseSection.classList.remove('linked');
+                expenseLinkIndicator.style.display = 'none';
+            }
+        }
+
+        // Item Management
+        function addItem(type, data = null, skipMark = false) {
+            const container = document.getElementById(type + 'Items');
+            const itemId = data?.id || 'item_' + Date.now() + '_' + Math.random();
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            itemDiv.dataset.id = itemId;
+            itemDiv.dataset.type = type;
+
+            itemDiv.innerHTML = `
+                <input type="text" class="item-name" placeholder="Name (e.g., Salaries, Sales)" value="${data?.name || ''}" oninput="markUnsaved()" onchange="calculate()">
+                <input type="number" class="item-amount" placeholder="0.000" step="0.001" value="${data?.amount || ''}" oninput="markUnsaved()" onchange="calculate()">
+                <span class="currency">KWD</span>
+                <div class="item-controls">
+                    <button class="icon-btn delete-btn" onclick="deleteItem(this)">🗑️</button>
+                </div>
+            `;
+
+            container.appendChild(itemDiv);
+
+            if (type === 'expense') {
+                const installmentDiv = document.createElement('div');
+                installmentDiv.className = 'installment-section';
+                installmentDiv.innerHTML = `
+                    <div class="installment-toggle">
+                        <input type="checkbox" class="installment-checkbox" ${data?.hasInstallment ? 'checked' : ''} onchange="toggleInstallments(this)">
+                        <label>Enable Installments</label>
+                    </div>
+                    <div class="installment-details ${data?.hasInstallment ? 'active' : ''}">
+                        <div class="installment-list"></div>
+                        <button class="add-btn" onclick="addInstallment(this)">+ Add Installment</button>
+                    </div>
+                `;
+                itemDiv.appendChild(installmentDiv);
+
+                if (data?.installments) {
+                    data.installments.forEach(inst => {
+                        addInstallment(installmentDiv.querySelector('.add-btn'), inst, true);
+                    });
+                }
+            }
+
+            if (!skipMark) {
+                markUnsaved();
+            }
+            calculate();
+        }
+
+        function deleteItem(btn) {
+            const item = btn.closest('.item');
+            const itemId = item.dataset.id;
+
+            const profile = profiles[currentProfile];
+            if (profile.sectionLinks) {
+                profile.sectionLinks.forEach(link => {
+                    link.items = link.items.filter(id => id !== itemId);
+                });
+                profile.sectionLinks = profile.sectionLinks.filter(link => link.items.length > 0);
+            }
+
+            item.remove();
+            markUnsaved();
+            calculate();
+            updateSectionLinkingVisuals();
+        }
+
+        // Installment Management
+        function toggleInstallments(checkbox) {
+            const details = checkbox.closest('.installment-section').querySelector('.installment-details');
+            if (checkbox.checked) {
+                details.classList.add('active');
+            } else {
+                details.classList.remove('active');
+            }
+            markUnsaved();
+            calculate();
+        }
+
+        function addInstallment(btn, data = null, skipMark = false) {
+            const list = btn.previousElementSibling || btn.closest('.installment-details').querySelector('.installment-list');
+
+            const instDiv = document.createElement('div');
+            instDiv.className = 'installment-item';
+            instDiv.innerHTML = `
+                <input type="number" class="inst-amount" placeholder="Amount" step="0.001" value="${data?.amount || ''}" oninput="markUnsaved()" onchange="calculate()">
+                <span class="currency">KWD</span>
+                <input type="date" class="inst-date" value="${data?.date || ''}" oninput="markUnsaved()" onchange="calculate()">
+                <div class="checkbox-container">
+                    <input type="checkbox" class="inst-paid" ${data?.paid ? 'checked' : ''} onchange="markUnsaved(); calculate()">
+                    <label>Paid</label>
+                </div>
+                <button class="icon-btn delete-btn" onclick="deleteInstallment(this)">🗑️</button>
+            `;
+
+            list.appendChild(instDiv);
+            if (!skipMark) {
+                markUnsaved();
+            }
+            calculate();
+        }
+
+        function deleteInstallment(btn) {
+            btn.closest('.installment-item').remove();
+            markUnsaved();
+            calculate();
+        }
+
+        // Calculation
+        function calculate() {
+            const profile = profiles[currentProfile];
+            let totalRevenue = 0;
+            let totalExpenses = 0;
+            let pendingInstallments = 0;
+            let inheritedRevenue = 0;
+
+            // Calculate inherited revenue from main profile if enabled
+            if (profile.type === 'sub' && profile.inheritMainRevenue && profile.parent) {
+                inheritedRevenue = calculateMainProfileRevenue(profile.parent);
+                totalRevenue += inheritedRevenue;
+
+                // Show inherited revenue in summary
+                document.getElementById('inheritedRevenueRow').style.display = 'flex';
+                document.getElementById('inheritedRevenue').textContent = inheritedRevenue.toFixed(3) + ' KWD';
+            } else {
+                document.getElementById('inheritedRevenueRow').style.display = 'none';
+            }
+
+            // Update main revenue badge in toggle section
+            if (profile.type === 'sub' && profile.parent) {
+                const mainRevenue = calculateMainProfileRevenue(profile.parent);
+                document.getElementById('mainRevenueBadge').textContent = mainRevenue.toFixed(3) + ' KWD';
+            }
+
+            document.querySelectorAll('#revenueItems .item').forEach(item => {
+                const amount = parseFloat(item.querySelector('.item-amount').value) || 0;
+                totalRevenue += amount;
+            });
+
+            document.querySelectorAll('#expenseItems .item').forEach(item => {
+                const amount = parseFloat(item.querySelector('.item-amount').value) || 0;
+                const installmentSection = item.querySelector('.installment-section');
+                const hasInstallments = installmentSection?.querySelector('.installment-checkbox')?.checked;
+
+                if (hasInstallments) {
+                    installmentSection.querySelectorAll('.installment-item').forEach(inst => {
+                        const instAmount = parseFloat(inst.querySelector('.inst-amount').value) || 0;
+                        const isPaid = inst.querySelector('.inst-paid').checked;
+
+                        if (isPaid) {
+                            totalExpenses += instAmount;
+                        } else {
+                            pendingInstallments += instAmount;
+                        }
+                    });
+                } else {
+                    totalExpenses += amount;
+                }
+            });
+
+            const netProfit = totalRevenue - totalExpenses;
+
+            document.getElementById('totalRevenue').textContent = totalRevenue.toFixed(3) + ' KWD';
+            document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(3) + ' KWD';
+            document.getElementById('pendingInstallments').textContent = pendingInstallments.toFixed(3) + ' KWD';
+            document.getElementById('netProfit').textContent = netProfit.toFixed(3) + ' KWD';
+        }
+
+        // Warn before closing if unsaved
+        window.addEventListener('beforeunload', function (e) {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>
